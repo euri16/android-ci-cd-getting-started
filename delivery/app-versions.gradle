@@ -1,0 +1,42 @@
+import java.text.SimpleDateFormat
+
+ext {
+    versionMajor = getVersionMajor()
+    versionMinor = getVersionMinor()
+    versionPatch = getVersionPatch()
+    version_name = "${versionMajor}.${versionMinor}.${versionPatch}"
+    version_code = getVersionCode()
+    version_date = generateBuildTime()
+}
+
+private def getVersionMajor() {
+    Properties properties = getVersionProperties()
+    return properties['MAJOR'].toInteger()
+}
+
+private def getVersionMinor() {
+    Properties properties = getVersionProperties()
+    return properties['MINOR'].toInteger()
+}
+
+private def getVersionPatch() {
+    Properties properties = getVersionProperties()
+    return properties['PATCH'].toInteger()
+}
+
+private def getVersionCode() {
+    Properties properties = getVersionProperties()
+    return properties['CODE'].toInteger()
+}
+
+private def getVersionProperties() {
+    def content = rootProject.file("delivery/version.properties")
+    Properties properties = new Properties()
+    InputStream is = new ByteArrayInputStream(content.getBytes())
+    properties.load(is)
+    return properties
+}
+
+private static def generateBuildTime() {
+    return new SimpleDateFormat("dd/MM/yyyy - hh:mm aa").format(new Date())
+}

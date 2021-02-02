@@ -1,0 +1,66 @@
+ext {
+    signingDebug = {
+        def propertiesFile = loadPropertiesFile("dev")
+        android.signingConfigs.debug {
+            storeFile loadKeyFile("debug")
+
+            def properties = loadProperties(propertiesFile)
+            storePassword properties.KEY_PASS
+            keyAlias properties.ALIAS
+            keyPassword properties.KEY_PASS
+        }
+    }
+
+    signingRelease = {
+        def propertiesFile = loadPropertiesFile("prod")
+        android.signingConfigs.release {
+            storeFile loadKeyFile("release")
+
+            def properties = loadProperties(propertiesFile)
+            storePassword properties.KEY_PASS
+            keyAlias properties.ALIAS
+            keyPassword properties.KEY_PASS
+        }
+    }
+
+    flavorDev = {
+        def propertiesFile = loadPropertiesFile("dev")
+        android.productFlavors.dev {
+            resValue "string", "app_name", "dev-CICD tutorial"
+            buildConfigField "String", "API_KEY", "\"${getValueFromProps(propertiesFile, "API_KEY")}\""
+        }
+    }
+
+    flavorStage = {
+        def propertiesFile = loadPropertiesFile("stage")
+        android.productFlavors.stage {
+            resValue "string", "app_name", "stage-CICD tutorial"
+            buildConfigField "String", "API_KEY", "\"${getValueFromProps(propertiesFile, "API_KEY")}\""
+        }
+    }
+
+    flavorProd = {
+        def propertiesFile = loadPropertiesFile("prod")
+        android.productFlavors.prod {
+            buildConfigField "String", "API_KEY", "\"${getValueFromProps(propertiesFile, "API_KEY")}\""
+        }
+    }
+
+    getValueFromProps = { propertiesFile, propertyKey ->
+        return propertiesFile.exists() ? loadProperties(propertiesFile).getProperty(propertyKey) : System.getenv(propertyKey)
+    }
+
+    loadPropertiesFile = { name ->
+        return rootProject.file("delivery/credentials/${name}.properties")
+    }
+
+    loadKeyFile = { name ->
+        return rootProject.file("delivery/keys/${name}.keystore")
+    }
+
+    loadProperties = { propertiesFile ->
+        def properties = new Properties()
+        properties.load(new FileInputStream(propertiesFile))
+        return properties
+    }
+}
