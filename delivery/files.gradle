@@ -1,0 +1,23 @@
+ext {
+    getValueFromProps = { propertiesFile, propertyKey ->
+        return propertiesFile.exists() ? loadProperties(propertiesFile).getProperty(propertyKey) : System.getenv(propertyKey)
+    }
+
+    getCredentialsFile = { name ->
+        return rootProject.file("delivery/credentials/${name}.properties")
+    }
+
+    getKeyFile = { name ->
+        return rootProject.file("delivery/keys/${name}.keystore")
+    }
+
+    getVersionPropertiesFile = { name ->
+        return rootProject.file("delivery/version.properties")
+    }
+
+    loadProperties = { propertiesFile ->
+        def properties = new Properties()
+        properties.load(new FileInputStream(propertiesFile))
+        return properties
+    }
+}

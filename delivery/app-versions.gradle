@@ -1,40 +1,37 @@
 import java.text.SimpleDateFormat
 
+apply from: rootProject.file("delivery/files.gradle")
+
 ext {
-    versionMajor = getVersionMajor()
-    versionMinor = getVersionMinor()
-    versionPatch = getVersionPatch()
+    def properties = getVersionProperties()
+
+    versionMajor = getVersionMajor(properties)
+    versionMinor = getVersionMinor(properties)
+    versionPatch = getVersionPatch(properties)
     version_name = "${versionMajor}.${versionMinor}.${versionPatch}"
-    version_code = getVersionCode()
+    version_code = getVersionCode(properties)
     version_date = generateBuildTime()
 }
 
-private def getVersionMajor() {
-    Properties properties = getVersionProperties()
+private static def getVersionMajor(def properties) {
     return properties['MAJOR'].toInteger()
 }
 
-private def getVersionMinor() {
-    Properties properties = getVersionProperties()
+private static def getVersionMinor(def properties) {
     return properties['MINOR'].toInteger()
 }
 
-private def getVersionPatch() {
-    Properties properties = getVersionProperties()
+private static def getVersionPatch(def properties) {
     return properties['PATCH'].toInteger()
 }
 
-private def getVersionCode() {
-    Properties properties = getVersionProperties()
+private static def getVersionCode(def properties) {
     return properties['CODE'].toInteger()
 }
 
 private def getVersionProperties() {
-    def content = rootProject.file("delivery/version.properties")
-    Properties properties = new Properties()
-    InputStream is = new ByteArrayInputStream(content.getBytes())
-    properties.load(is)
-    return properties
+    def versionFile = getVersionPropertiesFile()
+    return loadProperties(versionFile)
 }
 
 private static def generateBuildTime() {
