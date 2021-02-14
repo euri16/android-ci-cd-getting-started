@@ -16,36 +16,118 @@
 default_platform(:android)
 
 platform :android do
+
+  @SLACK_URL = "SLACK HOOK URL HERE" # builds Slack channel
+
+  @VERSION_FILE_PATH = "delivery/distribution/version.properties"
+
+  @COMMIT = last_git_commit
+  @COMMIT_MESSAGE = "#{@COMMIT[:author]}: #{@COMMIT[:message]}"
+
+  @SLACK_MESSAGE = ""
+
   desc "Runs all the tests"
   lane :test do
     gradle(task: "test")
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
-    gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
+  desc "Distribute app using Firebase App Distribution"
+  lane :release do
+    increment_version_code_and_push()
+
+    set_version_vars()
+
+    gradle(task: "assembleProdRelease")
+    gradle(task: "appDistributionUploadProdRelease")
+
+    @SLACK_MESSAGE += ":white_check_mark: #{@VERSION_NAME} APK uploaded to Firebase."
+
+    upload_to_play_store(
+      apk: "app/build/outputs/apk/prod/release/app-prod-release.apk",
+      track: "internal",
+      rollout: "1.0",
+      json_key: "delivery/service-account.json"
+    )
+
+    @SLACK_MESSAGE += ":white_check_mark: #{@VERSION_NAME} APK uploaded to Play Console internal track."
+
+    send_slack_msg()
   end
 
-  desc "Deploy a new version to the Google Play"
+  desc "Run checks"
+  lane :checks do
+      gradle(task: "assembleStageDebug")
+  end
+
+  desc "Deploy to Firebase App Distribution"
   lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
+      increment_version_code_and_push()
+
+      set_version_vars()
+
+      gradle(task: "assembleStageDebug")
+
+      prep_release_notes()
+      gradle(task: "appDistributionUploadStageDebug")
+
+      @SLACK_MESSAGE += ":white_check_mark: #{@VERSION_NAME} APK uploaded to Firebase."
+      send_slack_msg()
+  end
+
+  def prep_release_notes()
+    @RELEASE_NOTES = [
+        "Release Notes - Version #{@VERSION_NAME}\n\n",
+        "Change Log\n\n",
+        "- #{@COMMIT[:message].lines.join("- \n")}"
+    ].join() + "\n"
+
+    UI.message @RELEASE_NOTES
+
+    File.write('../release-notes.txt', @RELEASE_NOTES)
+  end
+
+  def send_slack_msg()
+    UI.message "Commit Message: #{@COMMIT_MESSAGE}"
+    slack(
+        message: "#{@SLACK_MESSAGE}",
+        payload: { "Ticket" => "#{@COMMIT_MESSAGE}" },
+        success: true,
+        slack_url: "#{@SLACK_URL}"
+    )
+  end
+
+  def set_version_vars
+    @VERSION_NUMBER = get_android_version_name(path: "#{@VERSION_FILE_PATH}")
+    @VERSION_NAME = "#{@VERSION_NUMBER} (#{@VERSION_CODE})"
+
+    UI.message "VERSION_NAME: #{@VERSION_NAME}"
+  end
+
+  error do |lane, exception|
+    if lane == :deploy || lane == :release
+        slack(
+            message: [
+                ":bangbang: *This build has errored*",
+                "<!here>, please check the build url: #{ENV['TRAVIS_BUILD_WEB_URL']}"
+            ].join("\n") + "\n",
+            payload: {
+                "Ticket" => "#{@COMMIT_MESSAGE}"
+            },
+            success: false,
+            slack_url: "#{@SLACK_URL}"
+        )
+    end
   end
 
   def increment_version_code_and_push()
     Dir.chdir("..") do
-    sh("git", "status")
-    sh("git", "add", ".bundle/")
-    sh("git", "add", "--force", "vendor/")
-    sh("git", "add", ".")
-    sh("git", "stash", "save")
+      sh("git", "status")
+      sh("git", "add", ".bundle/")
+      sh("git", "add", "--force", "vendor/")
+      sh("git", "add", ".")
+      sh("git", "stash", "save")
     end
 
-    # since we're changing branches, we need to make sure the current workspace is clean
     ensure_git_status_clean()
 
     Dir.chdir("..") do
