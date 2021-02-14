@@ -38,7 +38,7 @@ if [[ $BRANCH == develop ]]; then
 elif [[ $BRANCH == master ]]; then
   # bundle exec fastlane add_plugin upload_to_play_store
   # bundle exec fastlane release --verbose
-  # bundle exec fastlane checks --verbose
+  bundle exec fastlane checks --verbose
 else
   bundle exec fastlane checks --verbose
 fi
