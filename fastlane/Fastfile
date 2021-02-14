@@ -35,4 +35,38 @@ platform :android do
     gradle(task: "clean assembleRelease")
     upload_to_play_store
   end
+
+  def increment_version_code_and_push()
+    Dir.chdir("..") do
+    sh("git", "status")
+    sh("git", "add", ".bundle/")
+    sh("git", "add", "--force", "vendor/")
+    sh("git", "add", ".")
+    sh("git", "stash", "save")
+    end
+
+    # since we're changing branches, we need to make sure the current workspace is clean
+    ensure_git_status_clean()
+
+    Dir.chdir("..") do
+      sh("git", "status")
+      sh("git", "checkout", "develop")
+      sh("git", "pull", "origin", "develop")
+    end
+
+    @VERSION_CODE = increment_android_version_code(path: @VERSION_FILE_PATH)
+
+    Dir.chdir("..") do
+      sh("git", "diff")
+      sh("git", "add", "#{@VERSION_FILE_PATH}")
+      sh("git", "status")
+      sh("git", "commit", "-m", "[skip travis-ci] version bump to #{@VERSION_CODE}")
+      sh("git", "push", "origin", "develop")
+      sh("git", "reset", "--soft", "HEAD~1")
+      sh("git", "stash", "pop", "--quiet")
+      sh("git", "reset", "HEAD", ".bundle")
+      sh("git", "reset", "HEAD", "vendor/")
+      sh("git", "status")
+    end
+  end
 end
