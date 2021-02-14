@@ -47,18 +47,6 @@ module Fastlane
                 return Actions.lane_context[SharedValues::ANDROID_VERSION_NAME] = versionName
             end
 
-            def self.description
-                'This action reads the Android version name'
-            end
-
-            def self.is_supported?(platform)
-                platform == :android
-            end
-
-            def self.author
-                "iceque"
-            end
-
             def self.available_options
                 [
                     FastlaneCore::ConfigItem.new(key: :path,
