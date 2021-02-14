@@ -36,22 +36,22 @@ android {
             versionNameSuffix "-debug"
             signingConfig signingConfigs.debug
 
-            /*firebaseAppDistribution {
+            firebaseAppDistribution {
                 releaseNotesFile = "./release-notes.txt"
                 groups = "Stakeholders"
                 serviceCredentialsFile = rootProject.file("delivery/distribution/service-account.json")
-            }*/
+            }
         }
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            /*firebaseAppDistribution {
+            firebaseAppDistribution {
                 releaseNotesFile = rootProject.file("gradle-scripts/distribution/release_notes.txt")
                 groups = "Devs"
                 serviceCredentialsFile = rootProject.file("delivery/distribution/service-account.json")
-            }*/
+            }
         }
     }
     flavorDimensions "version"
