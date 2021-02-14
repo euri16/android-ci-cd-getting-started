@@ -17,7 +17,7 @@ default_platform(:android)
 
 platform :android do
 
-  @SLACK_URL = "SLACK HOOK URL HERE" # builds Slack channel
+  @SLACK_URL = "https://slack.hooks.url.com" # builds Slack channel
 
   @VERSION_FILE_PATH = "delivery/distribution/version.properties"
 
