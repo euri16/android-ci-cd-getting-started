@@ -132,8 +132,8 @@ platform :android do
 
     Dir.chdir("..") do
       sh("git", "status")
-      sh("git", "checkout", "develop")
-      sh("git", "pull", "origin", "develop")
+      sh("git", "checkout", "master")
+      sh("git", "pull", "origin", "master")
     end
 
     @VERSION_CODE = increment_android_version_code(path: @VERSION_FILE_PATH)
@@ -143,7 +143,7 @@ platform :android do
       sh("git", "add", "#{@VERSION_FILE_PATH}")
       sh("git", "status")
       sh("git", "commit", "-m", "[skip travis-ci] version bump to #{@VERSION_CODE}")
-      sh("git", "push", "origin", "develop")
+      sh("git", "push", "origin", "master")
       sh("git", "reset", "--soft", "HEAD~1")
       sh("git", "stash", "pop", "--quiet")
       sh("git", "reset", "HEAD", ".bundle")
