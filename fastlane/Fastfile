@@ -38,20 +38,20 @@ platform :android do
     set_version_vars()
 
     gradle(task: "assembleProdRelease")
-    gradle(task: "appDistributionUploadProdRelease")
+    # gradle(task: "appDistributionUploadProdRelease")
 
-    @SLACK_MESSAGE += ":white_check_mark: #{@VERSION_NAME} APK uploaded to Firebase."
+    # @SLACK_MESSAGE += ":white_check_mark: #{@VERSION_NAME} APK uploaded to Firebase."
 
-    upload_to_play_store(
-      apk: "app/build/outputs/apk/prod/release/app-prod-release.apk",
-      track: "internal",
-      rollout: "1.0",
-      json_key: "delivery/service-account.json"
-    )
+    # upload_to_play_store(
+    #   apk: "app/build/outputs/apk/prod/release/app-prod-release.apk",
+    #   track: "internal",
+    #   rollout: "1.0",
+    #   json_key: "delivery/service-account.json"
+    # )
 
-    @SLACK_MESSAGE += ":white_check_mark: #{@VERSION_NAME} APK uploaded to Play Console internal track."
+    # @SLACK_MESSAGE += ":white_check_mark: #{@VERSION_NAME} APK uploaded to Play Console internal track."
 
-    send_slack_msg()
+    # send_slack_msg()
   end
 
   desc "Run checks"
@@ -68,10 +68,10 @@ platform :android do
       gradle(task: "assembleStageDebug")
 
       prep_release_notes()
-      gradle(task: "appDistributionUploadStageDebug")
+      # gradle(task: "appDistributionUploadStageDebug")
 
-      @SLACK_MESSAGE += ":white_check_mark: #{@VERSION_NAME} APK uploaded to Firebase."
-      send_slack_msg()
+      # @SLACK_MESSAGE += ":white_check_mark: #{@VERSION_NAME} APK uploaded to Firebase."
+      # send_slack_msg()
   end
 
   def prep_release_notes()

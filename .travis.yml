@@ -18,7 +18,7 @@ git:
   depth: false
 install: true
 before_install:
-- openssl aes-256-cbc -K $encrypted_39d36d1_key -iv $encrypted_3b9f06d1_iv -in secrets.tar.enc -out ~/secrets.tar -d
+- openssl aes-256-cbc -K $encrypted_3b9f0b9d36d1_key -iv $encrypted_3b9f0b9d36d1_iv -in secrets.tar.enc -out secrets.tar -d
 - tar xvf ~/secrets.tar
 - yes | sdkmanager "platforms;android-30"
 - chmod +x ./gradlew

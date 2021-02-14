@@ -36,6 +36,7 @@ android {
             versionNameSuffix "-debug"
             signingConfig signingConfigs.debug
 
+            // TODO: Uncomment when you have the service-account.json
             /*firebaseAppDistribution {
                 releaseNotesFile = "./release-notes.txt"
                 groups = "Stakeholders"
@@ -47,6 +48,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
+            // TODO: Uncomment when you have the service-account.json
             /*firebaseAppDistribution {
                 releaseNotesFile = rootProject.file("gradle-scripts/distribution/release_notes.txt")
                 groups = "Devs"

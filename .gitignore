@@ -90,3 +90,6 @@ lint/tmp/
 
 # Android Profiling
 *.hprof
+
+personal_rsa
+secrets.tar
