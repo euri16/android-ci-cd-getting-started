@@ -48,6 +48,10 @@ platform :android do
     #   rollout: "1.0",
     #   json_key: "delivery/service-account.json"
     # )
+
+    # @SLACK_MESSAGE += ":white_check_mark: #{@VERSION_NAME} APK uploaded to Play Console internal track."
+
+    # send_slack_msg()
   end
 
 
@@ -66,6 +70,9 @@ platform :android do
 
       prep_release_notes()
       # gradle(task: "appDistributionUploadStageDebug")
+
+      # @SLACK_MESSAGE += ":white_check_mark: #{@VERSION_NAME} APK uploaded to Firebase."
+      # send_slack_msg()
   end
 
   def prep_release_notes()
@@ -78,6 +85,16 @@ platform :android do
     UI.message @RELEASE_NOTES
 
     File.write('../release-notes.txt', @RELEASE_NOTES)
+  end
+
+  def send_slack_msg()
+    UI.message "Commit Message: #{@COMMIT_MESSAGE}"
+    slack(
+        message: "#{@SLACK_MESSAGE}",
+        payload: { "Ticket" => "#{@COMMIT_MESSAGE}" },
+        success: true,
+        slack_url: "#{@SLACK_URL}"
+    )
   end
 
   def set_version_vars

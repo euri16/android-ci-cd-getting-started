@@ -36,8 +36,9 @@ git remote get-url origin
 if [[ $BRANCH == develop ]]; then
   bundle exec fastlane deploy --verbose
 elif [[ $BRANCH == master ]]; then
-  bundle exec fastlane add_plugin upload_to_play_store
-  bundle exec fastlane release --verbose
+  # bundle exec fastlane add_plugin upload_to_play_store
+  # bundle exec fastlane release --verbose
+  # bundle exec fastlane checks --verbose
 else
   bundle exec fastlane checks --verbose
 fi
