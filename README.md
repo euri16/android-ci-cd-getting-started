@@ -2,7 +2,7 @@
 
 This repo is the example project for a tutorial of how to automate your Android deployments by configuring your CI/CD with Travis, Fastlane and Firebase App Distribution.
 
-Check the blog post [here](https://euryperez.dev/android/guide-for-android-ci-cd/)
+Check the blog post here: [https://euryperez.dev/android/guide-for-android-ci-cd/](https://euryperez.dev/android/guide-for-android-ci-cd/)
 
 ## Setup
 
