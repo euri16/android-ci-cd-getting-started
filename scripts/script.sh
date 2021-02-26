@@ -25,6 +25,7 @@ export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo "$TRAVIS_BRA
 echo "TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST"
 echo "BRANCH=$BRANCH"
 
+
 ls .
 sudo chmod 600 personal_rsa
 eval "$(ssh-agent -s)"
