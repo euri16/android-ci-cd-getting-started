@@ -43,3 +43,4 @@ elif [[ $BRANCH == master ]]; then
 else
   bundle exec fastlane checks --verbose
 fi
+
